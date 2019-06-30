@@ -9,17 +9,14 @@
   },
   "dependencies": {
     "expo": "^33.0.0",
-    "expo-graphics": "^1.1.0",
     "expo-linear-gradient": "~5.0.1",
-    "expo-three": "^3.0.0-alpha.8",
     "lodash.debounce": "^4.0.8",
     "react": "16.8.3",
     "react-dom": "^16.8.6",
     "react-native": "https://github.com/expo/react-native/archive/sdk-33.0.0.tar.gz",
     "react-native-material-textfield": "^0.12.0",
     "react-native-web": "^0.11.4",
-    "react-navigation": "^3.11.0",
-    "three": "^0.106.2"
+    "react-navigation": "^3.11.0"
   },
   "devDependencies": {
     "babel-preset-expo": "^5.1.1"

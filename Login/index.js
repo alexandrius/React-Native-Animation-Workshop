@@ -1,5 +1,14 @@
 import React from 'react';
-import { StyleSheet, Text, View, Image, StatusBar, Animated, Dimensions, Easing } from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  StatusBar,
+  Animated,
+  Dimensions,
+  Easing
+} from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { TextField } from 'react-native-material-textfield';
 import Ripple from './components/ripple';
@@ -20,7 +29,7 @@ export default class App extends React.Component {
     loaderOpacity: new Animated.Value(0),
     buttonOpacity: new Animated.Value(1),
     rotation: new Animated.Value(0),
-    circlePosition: { x: 0, y: 0 },
+    circleY: 0,
     scale: new Animated.Value(0),
     circleOpacity: new Animated.Value(0),
     inputAnimation: new Animated.Value(1)
@@ -111,7 +120,7 @@ export default class App extends React.Component {
 
     const translateY = this.state.inputAnimation.interpolate({
       inputRange: [0, 1],
-      outputRange: [0, 60]
+      outputRange: [-60, 0]
     })
 
     return (
@@ -124,36 +133,43 @@ export default class App extends React.Component {
 
         <Text style={styles.titleStyle}>CLOVER</Text>
 
-        <View style={styles.inputContainer}>
-          <Animated.View style={{
+        <Animated.View
+          style={{
+            marginTop: 110,
+            marginHorizontal: 50,
             opacity: this.state.inputAnimation,
             transform: [{ translateY }]
           }}>
-            <TextField
-              {...inputProps}
-              label='Username'
-              style={styles.inputStyle} />
-            <TextField
-              {...inputProps}
-              label='Password'
-              secureTextEntry={true}
-              style={styles.inputStyle} />
-          </Animated.View>
+          <TextField
+            {...inputProps}
+            label='Username'
+            style={styles.inputStyle} />
+                    <TextField
+            {...inputProps}
+            label='Password'
+            secureTextEntry={true}
+            style={styles.inputStyle} />
+        </Animated.View>
+
+        <View style={{ flex: 1, }} />
+
+        <View style={styles.bottomContainer}
+          onLayout={({ nativeEvent }) => {
+            const { y } = nativeEvent.layout;
+            if (this.state.circleY === 0)
+              this.setState({
+                circleY: y
+              })
+          }}>
+
           <AnimatedRipple
-            onLayout={({ nativeEvent }) => {
-              //get button coords for the circle
-              const { x, y } = nativeEvent.layout;
-              if (this.state.circlePosition.x === 0)
-                this.setState({ circlePosition: { x, y } })
-            }}
             rippleContainerBorderRadius={20}
             rippleOpacity={0.5}
             onPress={this._onSignInPress.bind(this)}
             rippleColor={'white'}
             style={{
-              marginTop: 80,
               alignSelf: 'center',
-              width: this.state.buttonWidth
+              width: this.state.buttonWidth,
             }}>
 
             <Animated.View style={[styles.loginButtonStyle, { borderColor: borderColor }]}>
@@ -171,10 +187,11 @@ export default class App extends React.Component {
         </View>
         {/* Circle View */}
         <Animated.View style={[styles.authCircleStyle, {
-          left: this.state.circlePosition.x + EXPANDED_BUTTON_WIDTH / 2 - 20,
-          top: this.state.circlePosition.y + 20,
+          left: width / 2 - 20,
+          top: this.state.circleY,
           transform: [{ scale }],
-          opacity: this.state.circleOpacity
+          opacity: this.state.circleOpacity,
+          position: 'absolute'
         }]} />
       </View>
     );
@@ -203,10 +220,9 @@ const styles = StyleSheet.create({
     letterSpacing: 2,
     alignSelf: 'center'
   },
-  inputContainer: {
+  bottomContainer: {
     flex: 1,
-    justifyContent: 'flex-end',
-    paddingHorizontal: 50
+    paddingHorizontal: 50,
   },
   inputStyle: {
     backgroundColor: 'transparent',

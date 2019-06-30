@@ -1,11 +1,18 @@
 import React from 'react';
-import { View, Animated, Dimensions, Platform, Easing, StyleSheet, Text, StatusBar, TouchableOpacity } from 'react-native';
-import ExpoTHREE, { THREE } from 'expo-three';
-import { View as GraphicsView } from 'expo-graphics';
+import {
+    View,
+    Animated,
+    Dimensions,
+    Platform,
+    Easing,
+    StyleSheet,
+    Text,
+    StatusBar,
+    TouchableOpacity
+} from 'react-native';
 import MatrixMath from './MatrixMath';
 import { TouchableView } from '../components';
-import { Feather } from '@expo/vector-icons';
-import { guitarObj, guitarTexture, guitarShadow } from './assets';
+import { Feather, Ionicons } from '@expo/vector-icons';
 
 const { width } = Dimensions.get('window');
 const ROTATION_MAX = width - 100;
@@ -22,7 +29,6 @@ export default class App extends React.Component {
 
     componentDidMount() {
         StatusBar.setBarStyle('dark-content');
-        THREE.suppressExpoWarnings();
         this.rotation.addListener(({ value }) => {
 
             const mainAngle = this._getAngle(value);
@@ -45,8 +51,6 @@ export default class App extends React.Component {
                         { matrix: matrix }]
                 }
             });
-
-            this.updateGuitar();
 
             this.rotationValue = value;
         })
@@ -206,15 +210,15 @@ export default class App extends React.Component {
                         opacity: angleOpacity
                     }} />
 
+
                     <Text style={[styles.menuText, {
                         color: '#93402c',
                     }]}>GUITARS</Text>
 
-                    <Text style={styles.menuText}>BASSES</Text>
+
                     <Text style={styles.menuText}>AMPS</Text>
                     <Text style={styles.menuText}>PEDALS</Text>
                     <Text style={styles.menuText}>OTHERS</Text>
-
 
                 </Animated.View>
 
@@ -242,22 +246,6 @@ export default class App extends React.Component {
                     }}>GIBSON</Text>
 
 
-                    <Animated.Image style={{
-                        height: 900,
-                        width: 400,
-                        left: 5,
-                        top: -60,
-                        opacity: 0.5,
-                        position: 'absolute',
-                        transform: [{
-                            translateX: shadow
-                        }, {
-                            scale: shadowScale
-                        }]
-                    }}
-                        resizeMode='contain'
-                        source={guitarShadow} />
-
                 </Animated.View>
 
                 <View style={{ position: 'absolute', zIndex: 300, width: '100%', height: '100%' }}>
@@ -284,11 +272,6 @@ export default class App extends React.Component {
                             this.prev = event.gestureState.dx;
                             this.dx = event.gestureState.dx;
                         }}>
-                        <GraphicsView
-                            onContextCreate={this.onContextCreate}
-                            onRender={this.onRender}
-                            onResize={this.onResize}
-                            onShouldReloadContext={this.onShouldReloadContext} />
                     </TouchableView>
 
                     <Animated.View style={{
@@ -326,6 +309,23 @@ export default class App extends React.Component {
                         <Feather name='menu' size={40} color='rgb(10,8,7)' />
                     </TouchableOpacity>
                 </Animated.View>
+
+
+                <TouchableOpacity
+                    style={{
+                        position: 'absolute',
+                        bottom: 40,
+                        right: 40,
+                        zIndex: 20,
+                        zIndex: 300,
+                        opacity: 0.3
+                    }}
+                    onPress={() => {
+                        this.props.navigation.goBack();
+                    }}>
+                    <Text>GO BACK</Text>
+                </TouchableOpacity>
+
             </Animated.View>
         );
     }
@@ -339,84 +339,6 @@ export default class App extends React.Component {
         if (!degrees) return 0;
         return degrees * (Math.PI / 180);
     }
-
-
-    onContextCreate = async ({
-        gl,
-        canvas,
-        width,
-        height,
-        scale: pixelRatio,
-    }) => {
-        this.renderer = new ExpoTHREE.Renderer({
-            gl,
-            canvas,
-            width,
-            height,
-            pixelRatio,
-        });
-        this.scene = new THREE.Scene();
-        this.scene.add(new THREE.AmbientLight(0x404040));
-        this.camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
-
-        const pointLight = new THREE.PointLight(0xffffff, 1, 100);
-        pointLight.position.z = 1;
-        this.scene.add(pointLight);
-        this.scene.add(new THREE.AmbientLight(0xffffff, 0.3));
-
-        this.camera.position.z = 1;
-
-
-        /// ====== OBJ HERE ======
-        const mesh = await ExpoTHREE.loadObjAsync({
-            asset: guitarObj,
-        });
-
-        const texture = await ExpoTHREE.loadTextureAsync({
-            asset: guitarTexture,
-        })
-
-
-        var objMaterial = new THREE.MeshLambertMaterial({
-            map: texture
-        });
-
-        objMaterial.transparent = true;
-        objMaterial.side = THREE.DoubleSide;
-        objMaterial.alphaTest = 0.0;
-
-        mesh.traverse((obj) => {
-            if (obj instanceof THREE.Mesh) {
-                obj.material = objMaterial
-            }
-        });
-
-        ExpoTHREE.utils.scaleLongestSideToSize(mesh, 0.9)
-        ExpoTHREE.utils.alignMesh(mesh, { y: 1 })
-        this.scene.add(mesh)
-        this.guitar = mesh
-        this.guitar.rotation.x = this.toRadians(90);
-    };
-
-
-    onResize = ({ width, height, scale }) => {
-        this.camera.aspect = width / height;
-        this.camera.updateProjectionMatrix();
-        this.renderer.setPixelRatio(scale);
-        this.renderer.setSize(width, height);
-    };
-
-    updateGuitar() {
-        if (this.guitar) {
-            this.guitar.rotation.z = this.toRadians(-this.objRotation.__getValue());
-            this.guitar.position.x = this.objPosition ? this.objPosition.__getValue() : 0;
-            this.guitar.position.z = this.objScale ? this.objScale.__getValue() : 0;
-        }
-    }
-
-    onRender = delta => {
-        this.renderer.render(this.scene, this.camera);
-    };
 }
 
 const styles = StyleSheet.create({
