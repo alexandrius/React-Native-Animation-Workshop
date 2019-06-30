@@ -2,6 +2,7 @@
 
 Hi! This is the collection of Animations I created with React Native/Expo. This repo contains pretty interesting ways how you could animate the views while preserving 60 FPS.
 
+Like my work? [You can buy me a coffee](https://www.buymeacoffee.com/alexandrius) ☕
 
 ## MorphSlider
 
