@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, View, Animated, TextInput } from 'react-native';
 import { GradientHelper, ValueItem } from './components';
 import { TouchableView } from '../components';
-import { Svg } from 'expo';
+import Svg, { Path } from 'react-native-svg';
 import debounce from 'lodash.debounce';
 
 import {
@@ -303,10 +303,10 @@ export default class App extends React.Component {
             }}>
 
             <Svg style={{ height: BAR_HEIGHT, width: BAR_WIDTH }}>
-              <Svg.Path ref={ref => this.path = ref}
+              <Path ref={ref => this.path = ref}
                 d={this._getPath(0)}
                 fill='white'>
-              </Svg.Path>
+              </Path>
             </Svg>
 
             <Animated.View style={{
