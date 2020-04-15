@@ -4,9 +4,6 @@ Hi! This is the collection of Animations I created with React Native/Expo. This 
 
 Run the [app](https://exp.host/@alexandrius/AnimationWorkshop) with [Expo](https://expo.io/)
 
-Like my work? [You can buy me a coffee](https://www.buymeacoffee.com/alexandrius) ☕
-
-[<img src="https://www.buymeacoffee.com/assets/img/guidelines/download-assets-sm-2.svg">](https://www.buymeacoffee.com/alexandrius)
 
 
 ## MorphSlider
