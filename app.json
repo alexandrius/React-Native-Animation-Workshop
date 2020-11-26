@@ -3,7 +3,6 @@
     "name": "AnimationWorkshop",
     "slug": "AnimationWorkshop",
     "privacy": "public",
-    "sdkVersion": "33.0.0",
     "platforms": [
       "ios",
       "android",
