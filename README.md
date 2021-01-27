@@ -1,4 +1,4 @@
-# alexandrius React Native Animations Workshop
+# React Native Animations Workshop
 
 Hi! This is the collection of Animations I created with React Native/Expo. This repo contains pretty interesting ways how you could animate the views while preserving 60 FPS.
 
