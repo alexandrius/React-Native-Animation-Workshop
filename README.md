@@ -39,3 +39,8 @@ Run the [app](https://exp.host/@alexandrius/AnimationWorkshop) with [Expo](https
 
 * Bezier Curve Animation
 * Scale Animation
+
+
+## Hire us
+
+Message us at hello@4twiggers.com
