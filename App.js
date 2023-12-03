@@ -5,7 +5,7 @@ import MorphSlider from "./MorphSlider";
 import Curve from "./Curve";
 import Menu from "./MenuThree";
 import BalloonSlider from "./BalloonSlider";
-import { useState } from "react";
+import { useState, Fragment } from "react";
 
 const divider = <View style={{ height: 10 }} />;
 
@@ -38,10 +38,10 @@ export default function App() {
     <View style={styles.container}>
       {selectedScreen === -1 &&
         screens.map(({ name }, i) => (
-          <>
+          <Fragment key={name}>
             <Button title={name} onPress={() => setSelectedScreen(i)} />
             {divider}
-          </>
+          </Fragment>
         ))}
       {selectedScreen >= 0 && screens.map(({ Component }) => <Component />)}
     </View>
