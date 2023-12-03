@@ -6,6 +6,7 @@ import Curve from "./Curve";
 import Menu from "./MenuThree";
 import BalloonSlider from "./BalloonSlider";
 import { useState, Fragment } from "react";
+import { getTopInset } from "rn-iphone-helper";
 
 const divider = <View style={{ height: 10 }} />;
 
@@ -34,16 +35,24 @@ const screens = [
 
 export default function App() {
   const [selectedScreen, setSelectedScreen] = useState(-1);
+  let Screen;
+  if (selectedScreen >= 0) {
+    Screen = screens[selectedScreen].Component;
+  }
+
   return (
     <View style={styles.container}>
-      {selectedScreen === -1 &&
-        screens.map(({ name }, i) => (
-          <Fragment key={name}>
-            <Button title={name} onPress={() => setSelectedScreen(i)} />
-            {divider}
-          </Fragment>
-        ))}
-      {selectedScreen >= 0 && screens.map(({ Component }) => <Component />)}
+      {selectedScreen === -1 && (
+        <View style={{ paddingTop: getTopInset() + 20 }}>
+          {screens.map(({ name }, i) => (
+            <Fragment key={name}>
+              <Button title={name} onPress={() => setSelectedScreen(i)} />
+              {divider}
+            </Fragment>
+          ))}
+        </View>
+      )}
+      {Screen && <Screen />}
     </View>
   );
 }
