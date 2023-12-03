@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, View, Animated, TextInput } from "react-native";
+import { StyleSheet, View, Animated, TextInput, Text } from "react-native";
 import { GradientHelper, ValueItem } from "./components";
 import { TouchableView } from "../components";
 import Svg, { Path } from "react-native-svg";
@@ -22,11 +22,20 @@ import {
   VALUE_PADDING,
   VISIBLE_HOURS,
   width,
+  height,
   VALUE_ITEM_WIDTH,
 } from "./consts";
 
 const AnimatedGradientHelper = Animated.createAnimatedComponent(GradientHelper);
 const AnimatedTextInput = Animated.createAnimatedComponent(TextInput);
+
+const lines = new Array(40).fill(0);
+const heights = {
+  0: height - GRADIENT_HEIGHT - 60,
+  1: height - GRADIENT_HEIGHT - 100,
+  2: height - GRADIENT_HEIGHT - 120,
+  3: height - GRADIENT_HEIGHT - 100,
+};
 
 export default class App extends React.Component {
   _ballTranslateX = new Animated.Value(MIN_BAR_VALUE);
@@ -124,6 +133,34 @@ export default class App extends React.Component {
         {this._renderGradient()}
         {this._renderValueRow()}
         {this._renderSlider()}
+        {this._renderLines()}
+      </View>
+    );
+  }
+
+  _renderLines() {
+    return (
+      <View
+        style={{
+          position: "absolute",
+          height: height - GRADIENT_HEIGHT - BALL_SIZE,
+          bottom: 0,
+          width: width - VALUE_LEFT_MARGIN * 2,
+          flexDirection: "row",
+          alignItems: "center",
+        }}
+      >
+        {lines.map((f, i) => (
+          <View
+            key={i.toString()}
+            style={{
+              height: heights[i % 4],
+              width: 1,
+              backgroundColor: "rgba(0,0,0,0.3)",
+              left: ((width - VALUE_PADDING) / lines.length) * (i + 1),
+            }}
+          ></View>
+        ))}
       </View>
     );
   }
@@ -163,7 +200,9 @@ export default class App extends React.Component {
         defaultValue="0"
         underlineColorAndroid="transparent"
         style={{ color: "white", fontSize: 150, opacity: this._textOpacity }}
-      />
+      >
+        <Text style={{ fontSize: 30, textAlign: "center" }}> °C</Text>
+      </AnimatedTextInput>
     );
   }
 
