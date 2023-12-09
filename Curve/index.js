@@ -1,30 +1,36 @@
-import React from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Dimensions, Animated, Image } from 'react-native';
-import txt from './text';
-import { Feather } from '@expo/vector-icons';
+import React from "react";
+import {
+  View,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+  Dimensions,
+  Animated,
+  Image,
+} from "react-native";
+import txt from "./text";
+import { Feather } from "@expo/vector-icons";
+import { getTopInset } from "rn-iphone-helper";
 
-const { height, width } = Dimensions.get('window');
+const { height, width } = Dimensions.get("window");
 
 const BUTTON_TOP_MARGIN = 20;
 
 const ORIGINAL_BUTTON_WIDTH = width - 100;
-const BUTTON_SIZE = 36;
+const BUTTON_SIZE = 50;
 
 const FROM_X = width / 2 - BUTTON_SIZE / 2;
 
 const TO_X = width - 45;
-const TO_Y = 25;
+const TO_Y = getTopInset() - 15;
 
 const END = { x: TO_X, y: TO_Y };
 const CONTROL = { x: FROM_X, y: TO_Y };
 
-
 export default class App extends React.Component {
-
   buttonAnimatedValue = new Animated.Value(1);
   ballAnimatedValue = new Animated.Value(0);
   buttonOpacity = new Animated.Value(1);
-
 
   componentDidMount() {
     this.buttonAnimatedValue.addListener(({ value }) => {
@@ -35,13 +41,12 @@ export default class App extends React.Component {
         Animated.timing(this.ballAnimatedValue, {
           toValue,
           duration: 1000,
-          useNativeDriver: true
+          useNativeDriver: true,
         }).start();
-
       } else {
         this.buttonOpacity.setValue(1);
       }
-    })
+    });
 
     this.ballAnimatedValue.addListener(({ value }) => {
       const translateX = this.calcBezier(value, this.START.x, CONTROL.x, END.x);
@@ -51,111 +56,114 @@ export default class App extends React.Component {
       this.ball.setNativeProps({
         transform: [{ translateX }, { translateY }, { scale }],
       });
-    })
-
+    });
   }
 
   calcScale(value) {
-    return 1 - (value * 0.7);
+    return 1 - value * 0.7;
   }
 
   calcBezier(interpolatedTime, p0, p1, p2) {
     return Math.round(
       Math.pow(1 - interpolatedTime, 2) * p0 +
-      2 * (1 - interpolatedTime) * interpolatedTime * p1 +
-      Math.pow(interpolatedTime, 2) * p2
+        2 * (1 - interpolatedTime) * interpolatedTime * p1 +
+        Math.pow(interpolatedTime, 2) * p2
     );
   }
 
   render() {
     const buttonWidth = this.buttonAnimatedValue.interpolate({
       inputRange: [0, 1],
-      outputRange: [BUTTON_SIZE, ORIGINAL_BUTTON_WIDTH]
+      outputRange: [BUTTON_SIZE, ORIGINAL_BUTTON_WIDTH],
     });
 
     const ballOpacity = this.buttonOpacity.interpolate({
       inputRange: [0, 1],
-      outputRange: [1, 0]
-    })
-
-    // const scale = this.ballAnimatedValue.interpolate({
-    //   inputRange: [0, 1],
-    //   outputRange: [1, 0.5]
-    // })
+      outputRange: [1, 0],
+    });
 
     return (
       <View style={{ flex: 1 }}>
-
         <View
           style={{
-            alignItems: 'flex-end',
-            marginTop: 30,
+            alignItems: "flex-end",
+            paddingTop: getTopInset(),
             paddingHorizontal: 20,
-            backgroundColor: 'rgba(0,0,0,0.2)',
-            paddingVertical: 10
-          }}>
-          <Feather name='shopping-cart' size={20} />
+            backgroundColor: "rgba(0,0,0,0.2)",
+            paddingVertical: 10,
+          }}
+        >
+          <Feather name="shopping-cart" size={20} />
         </View>
 
         <ScrollView
           contentContainerStyle={{
             paddingVertical: 30,
-            paddingHorizontal: 20
-          }}>
-
-          <Image resizeMode='contain' style={{height: 300, width:'100%'}} source={require('./assets/chair.png')}/>
-          <Text>{txt.text}</Text>
+            paddingHorizontal: 20,
+          }}
+        >
+          <Image
+            resizeMode="contain"
+            style={{ height: 300, width: "100%" }}
+            source={require("./assets/chair.png")}
+          />
+          <Text style={{ color: "rgba(0,0,0,0.7)" }}>{txt.text}</Text>
 
           <TouchableOpacity
-            ref={ref => this.button = ref}
+            ref={(ref) => (this.button = ref)}
             onPress={() => {
               this.button.measure((x, y, width, height, px, py) => {
                 this._resetBallPosition(py + BUTTON_TOP_MARGIN);
                 Animated.timing(this.buttonAnimatedValue, {
                   toValue: 0,
-                  duration: 300
+                  duration: 300,
+                  useNativeDriver: false,
                 }).start();
-              })
-            }}>
+              });
+            }}
+          >
             <Animated.View
               style={{
                 width: buttonWidth,
-                backgroundColor: 'blue',
+                backgroundColor: "#4287f5",
                 marginTop: BUTTON_TOP_MARGIN,
-                alignItems: 'center',
+                alignItems: "center",
                 borderRadius: BUTTON_SIZE / 2,
-                alignSelf: 'center',
+                alignSelf: "center",
                 height: BUTTON_SIZE,
-                justifyContent: 'center',
-                opacity: this.buttonOpacity
-              }}>
-              <Animated.Text style={{
-                color: 'white',
-                opacity: this.buttonAnimatedValue
-              }}>Add to Cart</Animated.Text>
+                justifyContent: "center",
+                opacity: this.buttonOpacity,
+              }}
+            >
+              <Animated.Text
+                style={{
+                  color: "white",
+                  opacity: this.buttonAnimatedValue,
+                }}
+              >
+                Add to Cart
+              </Animated.Text>
             </Animated.View>
           </TouchableOpacity>
-
         </ScrollView>
 
         <Animated.View
-          ref={ref => this.ball = ref}
+          ref={(ref) => (this.ball = ref)}
           style={{
-            position: 'absolute',
+            position: "absolute",
             height: BUTTON_SIZE,
             width: BUTTON_SIZE,
             borderRadius: BUTTON_SIZE / 2,
-            backgroundColor: 'blue',
-            opacity: ballOpacity
+            backgroundColor: "#4287f5",
+            opacity: ballOpacity,
           }}
         />
-
       </View>
     );
   }
 
   _resetBallPosition(y) {
-    this.START = { x: FROM_X, y }
+    this.START = { x: FROM_X, y };
     this.ball.setNativeProps({
       transform: [{ translateX: this.START.x }, { translateY: this.START.y }],
     });
